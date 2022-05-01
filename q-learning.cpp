@@ -4,7 +4,7 @@ using namespace std;
 
 
 #define numOfStates 6
-#define gamma 0.9
+#define learningRate 0.9
 
 char s, x;
 char goal = 'F';
@@ -98,22 +98,19 @@ void QLearning(){
 
     //Select initial state by random (s)
     s = rand()%numOfStates + 'A';
-    // cout << "s: " << s << (int)s <<endl;
     
     //Do while goal not reached
     do
     {
         row = (int)s-64;
         col = rand()%numOfStates+1;
+
         //Select one possible action (x)
         while (R[row][col] == -1)
         {
             col = rand()%numOfStates+1;
         }
         x = (char) col+64;        
-        // cout <<row <<" (int)s-64: row "<<(int)s-64<<endl;
-        // cout <<col <<" rand()%numOfStates+1: col "<<endl;
-        // cout <<"x: "<<x<<endl; 
 
         //Get maximum Q for N(s,x) based on all possible actions
         maxRow = (int)x-64;
@@ -127,41 +124,25 @@ void QLearning(){
             
             maxCol++;
         }
-        // cout <<"max: "<<max<<endl;
         
         //𝑸 (𝒔, 𝒙) = 𝑹 (𝒔, 𝒙) + 𝜸 ∙ 𝑴𝒂𝒙 𝑸(𝑵(𝒔, 𝒙), 𝒂𝒍𝒍 𝒂𝒄𝒕𝒊𝒐𝒏𝒔)
-        Q[row][col] = R[row][col] + gamma * max;
-        // cout << "Q[row][col]: " << Q[row][col]<<endl;
+        Q[row][col] = R[row][col] + learningRate * max;
 
         //Set s=N(s,x)
         s = x; 
     } while (s != goal);
-        // } while (0);
 
     
 }
 
 int main(){
-    // int choice;
     srand ( time(NULL) );
     initQ();
-    // cout <<"do you went to enter R-table values or use values from the slides?\n write 1 if you want enter data\n write 2 if you don't want to "<<endl;
-    // cin >> choice;
-    // if(choice == 1)
-    //     initR();
-    // else if (choice == 2)
-        RExample();
-    // else {
-    //     cout << "you must enter 1 or 2" << endl;
-    //     return 0;
-    // }
+    RExample();
     cout << "inital tables: "<< endl <<endl;;
     printTables();
     for (int i = 0; i < 50; i++)
-    {
         QLearning();
-    }
-    
     cout << "\n\nAfter using Q-Learning algorithm: " << endl <<endl;
     printTables();
 
